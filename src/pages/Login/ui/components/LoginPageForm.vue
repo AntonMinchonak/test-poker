@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useApiLogin } from '@/shared/composables/useApiLogin.ts';
+import { useApiLogin } from '@/entities/User/composables/useApiLogin.ts';
 
 const { load, isLoading, errorText } = useApiLogin();
 
@@ -30,6 +30,7 @@ function submit() {
     flex-direction: column;
     gap: 10rem;
     align-items: center;
+    width: 100%;
 
     &__confirm {
         display: flex;
@@ -40,6 +41,11 @@ function submit() {
         border: none;
         font-weight: 700;
         border-radius: 5rem;
+        cursor: pointer;
+
+        &:hover {
+            filter: brightness(110%);
+        }
     }
 
     &__input {
@@ -47,6 +53,7 @@ function submit() {
         border: none;
         padding: 10rem;
         border-radius: 5rem;
+        width: 100%;
     }
 
     &__error {

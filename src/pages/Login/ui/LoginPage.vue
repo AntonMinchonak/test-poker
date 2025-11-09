@@ -17,6 +17,8 @@ import LoginPageForm from '@/pages/Login/ui/components/LoginPageForm.vue';
     align-items: center;
     flex-direction: column;
     justify-content: center;
+    grid-auto-columns: min(100%, 300rem);
+    padding: 8rem;
 
     &__title {
         font-size: 24rem;

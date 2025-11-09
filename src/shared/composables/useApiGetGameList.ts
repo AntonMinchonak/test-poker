@@ -9,7 +9,9 @@ export const useApiGetGameList = () => {
         try {
             const data = await GamesApi.getGamesList({ clientId: userStore.clientId });
             globalStore.gamesList = data.map((item) => ({ ...item.attributes, id: item.id }));
-        } catch {}
+        } catch (error) {
+            console.error('Failed to load games:', error);
+        }
     }
 
     return { load };

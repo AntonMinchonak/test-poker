@@ -33,9 +33,8 @@ router.beforeEach(async (to) => {
     if (!userStore.isAuthorized && to.name !== RouteName.LOGIN_PAGE) {
         return { name: RouteName.LOGIN_PAGE };
     }
-    if (userStore.isAuthorized && to.name === RouteName.LOGIN_PAGE) {
-        return false;
-    }
+
+    return !(userStore.isAuthorized && to.name === RouteName.LOGIN_PAGE);
 });
 
 export default router;

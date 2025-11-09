@@ -6,7 +6,7 @@ class Api {
     static async fetch(url: string, method: MethodType = 'GET', params = {}) {
         try {
             const response = await fetch(url, this.getInit(method, params));
-
+            console.log(response);
             if (!response.ok) {
                 throw Error(`Response status: ${response.status}`);
             }
@@ -17,8 +17,11 @@ class Api {
         }
     }
 
-    private static onError(error) {
-        throw Error(error);
+    private static onError(error: unknown) {
+        if (error instanceof Error) {
+            throw Error(`API Error: ${error.message}`);
+        }
+        throw Error('Unknown API error');
     }
 
     private static getInit(method: MethodType, params = {}) {
@@ -34,8 +37,8 @@ class Api {
         return init;
     }
 
-    private static buildSarchParams(params: object) {
-        return Object.entries(params).join('&').replace(/,/g, '=');
+    private static buildSearchParams(params: Record<string, string>): string {
+        return new URLSearchParams(params).toString();
     }
 
     protected static buildUrl(
@@ -44,9 +47,9 @@ class Api {
         version: MapValue<typeof ApiVersion> = ApiVersion.V_2,
         serviceName: MapValue<typeof ApiService> = ApiService.POKER,
     ): string {
-        const searchParams = this.buildSarchParams(search);
+        const searchParams = this.buildSearchParams(search);
 
-        return `${serviceName}/${version}/${url}?${searchParams}`.replace(/\/\//g, '/');
+        return `${serviceName}/${version}/${url}?${searchParams}`.replace(/(?<!:)\/\//g, '/');
     }
 }
 

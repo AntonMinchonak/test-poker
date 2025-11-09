@@ -14,8 +14,10 @@ export const useApiGetBalance = () => {
                 (somethingWeird) => somethingWeird.attributes.currency === userStore.currency,
             ).attributes.available;
 
-            userStore.balance = currentBalance;
-        } catch {}
+            userStore.balance = currentBalance || 0;
+        } catch (error) {
+            console.error('Failed to load balance:', error);
+        }
     }
 
     return { load };

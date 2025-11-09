@@ -7,7 +7,7 @@ export const useRefreshToken = () => {
     const { load: refreshToken } = useApiRefreshToken();
     let refreshTokenTimeout: ReturnType<typeof setTimeout> | null = null;
 
-    const updateGap = computed(() => (userStore.tokenTime - 850) * 1000);
+    const updateGap = computed(() => (userStore.tokenTime - userStore.tokenTime / 9) * 1000);
 
     const onError = (event: ApiErrorEvent) => {
         if (event.detail.status === '401') void refreshToken();

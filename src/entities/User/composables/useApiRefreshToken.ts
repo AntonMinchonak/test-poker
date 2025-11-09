@@ -1,13 +1,17 @@
 import UserApi from '@/shared/api/UserApi.ts';
 import { useUserStore } from '@/entities/User/store/UserStore.ts';
+import { ref } from 'vue';
 
-const MAX_TRIES = 3;
+const MAX_TRIES = 2;
+const fails = ref(0);
 
 export const useApiRefreshToken = () => {
     const userStore = useUserStore();
-    let fails = 0;
+    const retryTimeout: ReturnType<typeof setTimeout> | null = null;
 
     async function load() {
+        if (!userStore.refreshToken) return;
+
         try {
             const response = await UserApi.refreshToken({
                 refreshToken: userStore.refreshToken,
@@ -15,10 +19,12 @@ export const useApiRefreshToken = () => {
             });
 
             userStore.updateToken(response.token, response['refresh-token'], response['life-time']);
-            fails = 0;
+
+            clearTimeout(retryTimeout);
+            fails.value = 0;
         } catch {
-            fails++;
-            if (fails < MAX_TRIES) {
+            fails.value++;
+            if (fails.value < MAX_TRIES) {
                 setTimeout(async () => {
                     await load();
                 }, 5000);

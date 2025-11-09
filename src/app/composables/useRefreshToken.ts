@@ -7,6 +7,10 @@ export const useRefreshToken = () => {
     const { load: refreshToken } = useApiRefreshToken();
     let refreshTokenTimeout: ReturnType<typeof setTimeout> | null = null;
 
+    const onError = (event: ApiErrorEvent) => {
+        if (event.detail.status === '401') void refreshToken();
+    };
+
     watch(
         () => userStore.token,
         () => {
@@ -20,7 +24,10 @@ export const useRefreshToken = () => {
         },
     );
 
+    document.addEventListener('Api:Error', onError);
+
     onScopeDispose(() => {
         clearTimeout(refreshTokenTimeout);
+        document.removeEventListener('Api:Error', onError);
     });
 };

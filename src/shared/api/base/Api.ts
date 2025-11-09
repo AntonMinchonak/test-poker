@@ -6,9 +6,9 @@ class Api {
     static async fetch(url: string, method: MethodType = 'GET', params = {}) {
         try {
             const response = await fetch(url, this.getInit(method, params));
-            console.log(response);
+
             if (!response.ok) {
-                throw Error(`Response status: ${response.status}`);
+                throw Error(String(response.status));
             }
 
             return await response.json();
@@ -19,9 +19,20 @@ class Api {
 
     private static onError(error: unknown) {
         if (error instanceof Error) {
+            this.dispatchEventError(error.message);
             throw Error(`API Error: ${error.message}`);
         }
         throw Error('Unknown API error');
+    }
+
+    private static dispatchEventError(status) {
+        document.dispatchEvent(
+            new CustomEvent('Api:Error', {
+                detail: {
+                    status,
+                },
+            }) as ApiErrorEvent,
+        );
     }
 
     private static getInit(method: MethodType, params = {}) {
